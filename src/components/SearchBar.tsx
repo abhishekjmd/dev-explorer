@@ -10,24 +10,29 @@ import {
   x,
 } from "../assets";
 import { debounceFunction } from "../util/debounceFunction";
+import type { components } from "@octokit/openapi-types";
+
+type GitHubUser = components["schemas"]["simple-user"];
+type GitHubFullUser = components["schemas"]["public-user"];
 
 const octokit = new Octokit({
   auth: import.meta.env.VITE_AUTH_TOKEN,
 });
 
 function SearchBar() {
-  const [searchData, setSearchData] = useState([]);
-  const [selectedUser, setSelectedUser] = useState({});
+  const [searchData, setSearchData] = useState<GitHubUser[]>([]);
+  const [selectedUser, setSelectedUser] = useState<GitHubFullUser | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  console.log('auth token',import.meta.env.VITE_AUTH_TOKEN)
+  console.log("auth token", import.meta.env.VITE_AUTH_TOKEN);
 
-  const handleSearch = debounceFunction(async (value) => {
+  const handleSearch = debounceFunction(async (value:string) => {
     if (value.length > 0) {
       const response = await octokit.request("GET /search/users", {
         q: value.trim(),
       });
       console.log("response data", response.data.items);
-      setSelectedUser({});
+      setSelectedUser(null);
       setSearchData(response.data.items);
     } else {
       createdBy();
@@ -44,7 +49,7 @@ function SearchBar() {
     createdBy();
   }, []);
 
-  const accountCreationTime = (time) => {
+  const accountCreationTime = (time:string | undefined) => {
     return new Date(time).toLocaleDateString("en-US", {
       day: "numeric",
       month: "long",
@@ -52,11 +57,11 @@ function SearchBar() {
     });
   };
 
-  const handleProfileVisit = (url) => {
+  const handleProfileVisit = (url:string) => {
     window.open(url);
   };
 
-  const handleUser = async (username) => {
+  const handleUser = async (username:string) => {
     try {
       const response = await octokit.request(`GET /users/${username}`, {
         headers: {
@@ -79,8 +84,7 @@ function SearchBar() {
           <br /> Connect, Learn
         </p>
         <p className="hidden lg:block text-white font-medium font-mono lg:text-xl text-sm">
-          DevBorder — Explore,
-           Connect, Learn
+          DevBorder — Explore, Connect, Learn
         </p>
         <div className="flex gap-3 justify-center items-center">
           <p className="text-white font-medium font-mono uppercase lg:text-xs text-sm">
@@ -93,13 +97,16 @@ function SearchBar() {
         <div className="w-[60%] flex gap-3 ml-3">
           <img className="lg:h-7 lg:w-7 h-5 w-5" src={search} />
           <input
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value)
+              handleSearch(e.target.value)
+            }}
             placeholder="Search Github username..."
             className="text-white w-[70%] lg:w-[60%] text-[11px]  lg:text-lg font-mono outline-0"
           />
         </div>
         <button
-          onClick={handleSearch}
+          onClick={()=>handleSearch(searchTerm)}
           className="lg:py-2 lg:px-3 py-1 px-2 bg-[#0079FF] rounded-md text-white text-sm"
         >
           search
@@ -293,7 +300,6 @@ function SearchBar() {
                       <img
                         src={location}
                         className="lg:h-4 lg:w-4 h-2.5 w-2.5"
-                        
                       />
                       <span className="text-gray-300 font-mono text-[10px] lg:text-xs">
                         {selectedUser?.location

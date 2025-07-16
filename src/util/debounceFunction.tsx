@@ -1,13 +1,15 @@
-export const debounceFunction = (callback, delay) => {
-  let timeoutId;
-  return (...args) => {
+export function debounceFunction(
+  callback: (...args: string[]) => void | Promise<void>,
+  delay: number
+): (...args: string[]) => void {
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  return (...args: string[]) => {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(async () => {
-      try {
-        await callback(...args); // <-- now properly handles async
-      } catch (error) {
+    timeoutId = setTimeout(() => {
+      Promise.resolve(callback(...args)).catch((error) => {
         console.error("Debounced function error:", error);
-      }
+      });
     }, delay);
   };
-};
+}
