@@ -57,7 +57,7 @@ function SearchBar() {
       day: "numeric",
       month: "long",
       year: "numeric",
-    });
+    }); // ✅ this returns a string
   };
 
   const handleProfileVisit = (url: string) => {
@@ -87,7 +87,7 @@ function SearchBar() {
           <br /> Connect, Learn
         </p>
         <p className="hidden lg:block text-white font-medium font-mono lg:text-xl text-sm">
-          DevBorder — Explore, Connect, Learn
+          DevBorder .— Explore, Connect, Learn
         </p>
         <div className="flex gap-3 justify-center items-center">
           <p className="text-white font-medium font-mono uppercase lg:text-xs text-sm">
@@ -262,10 +262,11 @@ function SearchBar() {
                         selectedUser?.twitter_username ? "cursor-pointer" : ""
                       }`}
                       onClick={() => {
-                        selectedUser?.twitter_username &&
+                        if (selectedUser?.twitter_username) {
                           handleProfileVisit(
-                            `https://x.com/${selectedUser?.twitter_username}`
+                            `https://x.com/${selectedUser.twitter_username}`
                           );
+                        }
                       }}
                     >
                       <img src={x} className="lgh-4 lg:w-4 h-2.5 w-2.5" />
