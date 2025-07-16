@@ -41,8 +41,10 @@ function SearchBar() {
 
   const createdBy = async () => {
     const response = await handleUser("abhishekjmd");
-    setSelectedUser(response.data);
-    console.log("response", response.data);
+    if (response?.data) {
+      setSelectedUser(response.data);
+      console.log("response", response.data);
+    }
   };
 
   useEffect(() => {
@@ -53,6 +55,7 @@ function SearchBar() {
   }, []);
 
   const accountCreationTime = (time: string | undefined) => {
+    if (!time) return "Date not available";
     return new Date(time).toLocaleDateString("en-US", {
       day: "numeric",
       month: "long",
@@ -74,8 +77,10 @@ function SearchBar() {
       setSearchData([]);
       setSelectedUser(response.data);
       console.log("response", response.data);
+      return response;
     } catch (error) {
       console.log("error", error);
+      return undefined; //
     }
   };
 
