@@ -77,7 +77,7 @@ function SearchBar() {
       setSearchData([]);
       setSelectedUser(response.data);
       console.log("response", response.data);
-      return response;
+      return response.data;
     } catch (error) {
       console.log("error", error);
       return undefined; //
@@ -85,7 +85,7 @@ function SearchBar() {
   };
 
   return (
-    <div className="flex w-[100vw]  flex-col lg:h-[100vh] h-auto bg-[#141C2F] overflow-y-scroll lg:overflow-y-hidden justify-center items-center">
+    <div className="flex w-[100vw] lg:mb-0 flex-col lg:h-[100vh] h-auto bg-[#141C2F] overflow-y-scroll lg:overflow-y-hidden justify-center items-center">
       <div className="w-[90%] lg:w-[60%] lg:mt-0 mt-8 h-auto  flex items-center justify-between">
         <p className="lg:hidden text-white font-medium font-mono lg:text-xl text-sm">
           DevBorder — Explore,
@@ -159,7 +159,7 @@ function SearchBar() {
           })}
 
         {selectedUser && Object.keys(selectedUser).length > 0 && (
-          <div className="flex p-4 lg:p-7 gap-4 lg:gap-8 h-auto justify-center lg:items-center rounded-xl mt-5  bg-[#1F2A48] w-[100%]">
+          <div className="flex p-4 lg:p-7  gap-4 lg:gap-8 h-auto justify-center lg:items-center rounded-xl mt-5 mb-5 lg:mb-0  bg-[#1F2A48] w-[100%]">
             <div className="h-[100%]">
               <img
                 src={selectedUser?.avatar_url}
