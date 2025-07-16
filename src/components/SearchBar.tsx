@@ -1,5 +1,5 @@
 import { Octokit } from "octokit";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   arrowUp,
   lightMode,
@@ -26,7 +26,7 @@ function SearchBar() {
 
   console.log("auth token", import.meta.env.VITE_AUTH_TOKEN);
 
-  const handleSearch = debounceFunction(async (value:string) => {
+  const handleSearch = debounceFunction(async (value: string) => {
     if (value.length > 0) {
       const response = await octokit.request("GET /search/users", {
         q: value.trim(),
@@ -39,17 +39,20 @@ function SearchBar() {
     }
   }, 500);
 
-  const createdBy = () => {
-    const response = handleUser("abhishekjmd");
+  const createdBy = async () => {
+    const response = await handleUser("abhishekjmd");
     setSelectedUser(response.data);
     console.log("response", response.data);
   };
 
   useEffect(() => {
-    createdBy();
+    const fetchData = async () => {
+      await createdBy();
+    };
+    fetchData();
   }, []);
 
-  const accountCreationTime = (time:string | undefined) => {
+  const accountCreationTime = (time: string | undefined) => {
     return new Date(time).toLocaleDateString("en-US", {
       day: "numeric",
       month: "long",
@@ -57,11 +60,11 @@ function SearchBar() {
     });
   };
 
-  const handleProfileVisit = (url:string) => {
+  const handleProfileVisit = (url: string) => {
     window.open(url);
   };
 
-  const handleUser = async (username:string) => {
+  const handleUser = async (username: string) => {
     try {
       const response = await octokit.request(`GET /users/${username}`, {
         headers: {
@@ -98,15 +101,15 @@ function SearchBar() {
           <img className="lg:h-7 lg:w-7 h-5 w-5" src={search} />
           <input
             onChange={(e) => {
-              setSearchTerm(e.target.value)
-              handleSearch(e.target.value)
+              setSearchTerm(e.target.value);
+              handleSearch(e.target.value);
             }}
             placeholder="Search Github username..."
             className="text-white w-[70%] lg:w-[60%] text-[11px]  lg:text-lg font-mono outline-0"
           />
         </div>
         <button
-          onClick={()=>handleSearch(searchTerm)}
+          onClick={() => handleSearch(searchTerm)}
           className="lg:py-2 lg:px-3 py-1 px-2 bg-[#0079FF] rounded-md text-white text-sm"
         >
           search
